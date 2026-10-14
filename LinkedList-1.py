@@ -7,27 +7,30 @@ class LinkedList:
 
     def __init__(self):
         self.head = None
+        self.tail = None
             
     def append(self, data):
         new_node = self.Node(data)
         
         if self.head == None:
             self.head = new_node
+            self.tail = new_node
             return
-
-        current = self.head
-        while current.next is not None:
-            current = current.next
-        current.next = new_node
+        self.tail.next = new_node
+        self.tail = new_node
 
     def prepend(self, data):
         new_head_node = self.Node(data)
         new_head_node.next = self.head
         self.head = new_head_node
+        if self.tail is None:
+            self.tail = new_head_node
 
     def insert(self, insert_index, data):
         insert_item = self.Node(data)
         current = self.head
+        if self.tail is None:
+            self.tail = insert_item
         
         if insert_index == 0:
             insert_item.next = self.head
@@ -45,6 +48,8 @@ class LinkedList:
             if iter_index == insert_index-1:
                 insert_item.next = current.next
                 current.next = insert_item
+                if insert_item.next is None:
+                    self.tail = insert_item
                 return
             iter_index += 1
             current = current.next
@@ -55,6 +60,8 @@ class LinkedList:
 
         if del_index == 0:
             self.head = current.next if current is not None else None
+            if self.head is None:
+                self.tail = None
             return
 
         elif del_index < 0:
@@ -66,7 +73,14 @@ class LinkedList:
         iter_index = 0
         while (current is not None) and (iter_index < del_index):
             if iter_index == del_index-1:
-                current.next = current.next.next if current.next is not None else None
+                if current.next is None:
+                    print("Index Out OF Bounds!")
+                    return
+                current.next = current.next.next
+                if current.next is None:
+                    self.tail = current
+                if self.head is None:
+                    self.tail = None
                 return
             iter_index += 1
             current = current.next
